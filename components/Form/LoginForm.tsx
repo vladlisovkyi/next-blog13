@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import ReusableInput from "./LoginInput";
 import { signIn } from "next-auth/react";
@@ -27,36 +27,43 @@ const LoginForm = () => {
   } = useForm<FormState>({
     mode: "onBlur",
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const handleFormSubmit = async (data: FormState) => {
-    console.log(type);
-    if (type === "signup") {
-      const { username, email, password } = data;
-      const res = await fetch(`${process.env.PUBLIC_URL}/api/user`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, email, password }),
-      });
+    setIsLoading(true);
+    try {
+      if (type === "signup") {
+        const { username, email, password } = data;
+        const res = await fetch(`/api/user`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, email, password }),
+        });
 
-      if (res.ok) {
-        router.push("/login?type=signin");
-      } else {
-        const errorResponse = await res.json();
-        toast.error(
-          errorResponse.error ||
-            "This email is already registered or something bad happened"
-        );
+        if (res.ok) {
+          router.push("/login?type=signin");
+        } else {
+          const errorResponse = await res.json();
+          toast.error(
+            errorResponse.error ||
+              "This email is already registered or something bad happened"
+          );
+        }
+      } else if (type === "signin") {
+        await signIn("credentials", {
+          redirect: false,
+          email: data.email,
+          password: data.password,
+        });
+        router.push("/");
       }
-    } else if (type === "signin") {
-      await signIn("credentials", {
-        redirect: false,
-        email: data.email,
-        password: data.password,
-      });
-      router.push("/");
+      reset();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsLoading(false);
     }
-    reset();
   };
   return (
     <form
@@ -129,8 +136,9 @@ const LoginForm = () => {
       <button
         className="px-6 py-3 rounded-lg bg-blue-300 mt-6 hover:bg-blue-400 transition-colors duration-150"
         type="submit"
+        disabled={isLoading}
       >
-        {type === "signup" ? "Sign Up" : "Sign In"}
+        {isLoading ? "Loading..." : type === "signup" ? "Sign Up" : "Sign In"}
       </button>
     </form>
   );

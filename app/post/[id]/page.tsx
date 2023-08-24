@@ -13,7 +13,6 @@ interface PageProps {
   };
 }
 
-
 export async function generateMetadata({ params: { id } }: PageProps) {
   const postData: Promise<IPost> = fetchPostById(id);
   const post = await postData;
@@ -60,11 +59,11 @@ const PostPage = async ({ params: { id } }: PageProps) => {
 
 export default PostPage;
 
-// export async function generateStaticParams() {
-//   const postsData: Promise<IPost[]> = fetchAllPosts();
-//   const posts = await postsData;
+export async function generateStaticParams() {
+  const postsData: Promise<IPost[]> = fetchAllPosts();
+  const posts = await postsData;
 
-//   return posts.map((post) => ({
-//     id: post._id.toString(),
-//   }));
-// }
+  return posts.map((post) => ({
+    id: post._id.toString(),
+  }));
+}

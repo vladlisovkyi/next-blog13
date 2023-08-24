@@ -17,9 +17,9 @@ const CreatePostPage = () => {
     revalidateTag("categories");
   };
   return (
-    <div>
+    <>
       <Form revalTag={revalTag} />
-    </div>
+    </>
   );
 };
 

@@ -47,11 +47,11 @@ const CategoryPage = async ({ params: { id } }: PageProps) => {
 
 export default CategoryPage;
 
-// export async function generateStaticParams() {
-//   const catsData: Promise<ICat[]> = fetchAllCategories();
-//   const cats = await catsData;
+export async function generateStaticParams() {
+  const catsData: Promise<ICat[]> = fetchAllCategories();
+  const cats = await catsData;
 
-//   return cats.map((post) => ({
-//     id: post._id.toString(),
-//   }));
-// }
+  return cats.map((post) => ({
+    id: post._id.toString(),
+  }));
+}
