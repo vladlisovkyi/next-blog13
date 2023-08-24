@@ -5,7 +5,7 @@ import { ICat } from "@/types";
 import MenuLogin from "./MenuLogin";
 import { MdOutlineExplore, MdCardTravel } from "react-icons/md";
 import fetchAllCategories from "@/helpers/fetchAllCategories";
-export const runtime = "edge";
+// export const runtime = "edge";
 
 const Header = async () => {
   const categoriesData: Promise<ICat[]> = fetchAllCategories();
@@ -22,7 +22,7 @@ const Header = async () => {
               {/* <li>
               <LangSwitcher locale={locale} />
             </li> */}
-              {categories.map((category, index) => (
+              {categories && categories?.map((category, index) => (
                 <li key={category._id}>
                   <Link
                     href={`/category/${category._id}`}
